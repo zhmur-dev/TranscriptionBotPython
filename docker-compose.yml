@@ -1,0 +1,25 @@
+volumes:
+  telegram_data:
+
+services:
+  telegram_bot_api:
+    image: aiogram/telegram-bot-api:latest
+    env_file:
+      - creds/.env
+    volumes:
+      - telegram_data:/var/lib/telegram-bot-api
+    ports:
+      - "8081:8081"
+    restart: on-failure
+
+  transcription_efmobot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - creds/.env
+    volumes:
+      - telegram_data:/var/lib/telegram-bot-api
+    depends_on:
+      - telegram_bot_api
+    restart: on-failure
