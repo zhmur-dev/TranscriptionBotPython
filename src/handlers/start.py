@@ -24,6 +24,7 @@ async def transcribe_audio(message: Message, state: FSMContext):
 )
 async def handle_document(message: Message, bot: Bot, state: FSMContext):
     await state.set_state(state=None)
+
     try:
         if message.audio:
             file_id = message.audio.file_id
@@ -37,6 +38,7 @@ async def handle_document(message: Message, bot: Bot, state: FSMContext):
         else:
             await message.answer(text=MESSAGES.get('wrong_file_type'))
             return
+
         await message.answer(text=MESSAGES.get('transcription_process'))
         file = await bot.get_file(file_id)
         file_path = file.file_path
@@ -56,9 +58,14 @@ async def handle_document(message: Message, bot: Bot, state: FSMContext):
             chat_id=message.chat.id,
             document=document,
         )
-        service.clean_garbage()
 
     except Exception as e:
         await message.answer(
             text=MESSAGES.get('common_error').format(e)
         )
+
+    try:
+        service.clean_garbage()  # noqa
+
+    except Exception:  # noqa
+        pass
