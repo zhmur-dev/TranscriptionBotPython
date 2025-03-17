@@ -10,7 +10,7 @@ services:
       - telegram_data:/var/lib/telegram-bot-api
     ports:
       - "8081:8081"
-    restart: on-failure
+    restart: always
 
   transcription_efmobot:
     build:
@@ -22,4 +22,4 @@ services:
       - telegram_data:/var/lib/telegram-bot-api
     depends_on:
       - telegram_bot_api
-    restart: on-failure
+    restart: always
