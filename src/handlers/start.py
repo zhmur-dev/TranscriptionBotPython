@@ -29,14 +29,21 @@ async def handle_document(message: Message, bot: Bot, state: FSMContext):
         if message.audio:
             file_id = message.audio.file_id
             original_filename = message.audio.file_name
+            file_size = message.audio.file_size
         elif message.video:
             file_id = message.video.file_id
             original_filename = message.video.file_name
+            file_size = message.video.file_size
         elif message.document:
             file_id = message.document.file_id
             original_filename = message.document.file_name
+            file_size = message.document.file_size
         else:
             await message.answer(text=MESSAGES.get('wrong_file_type'))
+            return
+
+        if file_size > 1024 * 1024 * 1024:
+            await message.answer(text=MESSAGES.get('file_too_big'))
             return
 
         await message.answer(text=MESSAGES.get('transcription_process'))
