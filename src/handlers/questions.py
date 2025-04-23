@@ -38,5 +38,21 @@ async def handle_text_file(message: Message, bot: Bot, state: FSMContext):
     content = downloaded_file.read().decode('utf-8')
     filtered_lines = [line for line in content.splitlines() if line.strip().endswith('?')]
 
-    await message.answer(text='\n'.join(filtered_lines))
+    max_message_length = 4096
+
+    text_parts = []
+    current_part = ''
+    for line in filtered_lines:
+        if len(current_part) + len(line) + 1 <= max_message_length:
+            current_part += line + '\n'
+        else:
+            text_parts.append(current_part.strip())
+            current_part = line + '\n'
+
+    if current_part:
+        text_parts.append(current_part.strip())
+
+    for part in text_parts:
+        await message.answer(text=part)
+
     await state.set_state(state=None)
