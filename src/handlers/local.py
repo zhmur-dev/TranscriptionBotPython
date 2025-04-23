@@ -5,20 +5,20 @@ from aiogram.types import FSInputFile, Message
 
 from src.config.config import settings
 from src.services.transcription import TranscriptService
-from src.messages.local_file_msg import MESSAGES
+from src.messages.local_msg import MESSAGES
 from src.utils.states import FSMTranscriptionStage
 
-local_file_router = Router()
+local_router = Router()
 
 
-@local_file_router.message(Command(commands='local_file'))
+@local_router.message(Command(commands='local'))
 async def transcribe_audio(message: Message, state: FSMContext):
     await state.set_state(state=None)
     await message.answer(text=MESSAGES.get('select_file'))
     await state.set_state(FSMTranscriptionStage.transcription_run)
 
 
-@local_file_router.message(
+@local_router.message(
     F.video | F.audio | F.document,
     StateFilter(FSMTranscriptionStage.transcription_run)
 )

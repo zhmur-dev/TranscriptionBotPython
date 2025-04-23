@@ -4,7 +4,7 @@ import logging
 from aiogram.types import BotCommand, BotCommandScopeDefault
 
 from src.config.create_bot import bot, dp
-from src.handlers.local_file import local_file_router
+from src.handlers.local import local_router
 from src.handlers.start import start_router
 
 
@@ -12,7 +12,7 @@ async def set_commands():
     await bot.set_my_commands(
         [
             BotCommand(command='start', description='Start'),
-            BotCommand(command='local_file', description='Transcribe from local file'),
+            BotCommand(command='local', description='Transcribe from local file'),
         ],
         BotCommandScopeDefault(),
     )
@@ -23,7 +23,7 @@ async def main() -> None:
     await set_commands()
     dp.include_routers(
         start_router,
-        local_file_router,
+        local_router,
     )
     await dp.start_polling(bot)
 
