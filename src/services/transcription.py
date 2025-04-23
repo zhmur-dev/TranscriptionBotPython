@@ -49,7 +49,7 @@ class TranscriptService:
             return result
 
         except Exception as e:
-            logging.info(
+            logging.error(
                 MESSAGES.get('transcription_error').format(e)
             )
 
@@ -83,7 +83,7 @@ class TranscriptService:
                 file.write(sentences)
 
         except Exception as e:
-            logging.info(
+            logging.error(
                 MESSAGES.get('file_processing_error').format(e)
             )
 
@@ -93,7 +93,7 @@ class TranscriptService:
             text = self._transcribe_file()
             self._create_text_file(text)
         except Exception as e:
-            logging.info(
+            logging.error(
                 MESSAGES.get('file_processing_error').format(e)
             )
 
@@ -106,6 +106,6 @@ class TranscriptService:
                 MESSAGES.get('file_deletion_success')
             )
         except Exception as e:
-            logging.info(
+            logging.error(
                 MESSAGES.get('file_deletion_error').format(e)
             )
