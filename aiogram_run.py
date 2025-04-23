@@ -5,6 +5,7 @@ from aiogram.types import BotCommand, BotCommandScopeDefault
 
 from src.config.create_bot import bot, dp
 from src.handlers.local import local_router
+from src.handlers.questions import questions_router
 from src.handlers.start import start_router
 
 
@@ -13,6 +14,7 @@ async def set_commands():
         [
             BotCommand(command='start', description='Start'),
             BotCommand(command='local', description='Transcribe from local file'),
+            BotCommand(command='questions', description='Extract questions from .txt file')
         ],
         BotCommandScopeDefault(),
     )
@@ -24,6 +26,7 @@ async def main() -> None:
     dp.include_routers(
         start_router,
         local_router,
+        questions_router,
     )
     await dp.start_polling(bot)
 
