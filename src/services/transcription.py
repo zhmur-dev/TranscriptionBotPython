@@ -22,7 +22,7 @@ class TranscriptService:
         self.text_file_name = f'{file_name[:-4]}.txt'
         self.base_url = os.getcwd()
         self.transcription_options = PrerecordedOptions(
-            model="nova-2",
+            model='nova-2',
             smart_format=True,
             language='ru',
         )
@@ -34,10 +34,10 @@ class TranscriptService:
         )
         try:
             deepgram = DeepgramClient(api_key=self.api_key)
-            with open(f'{self.audio_file_name}', "rb") as file:
+            with open(f'{self.audio_file_name}', 'rb') as file:
                 buffer_data = file.read()
             payload: FileSource = {
-                "buffer": buffer_data,
+                'buffer': buffer_data,
             }
             response = deepgram.listen.rest.v('1').transcribe_file(
                 payload,
