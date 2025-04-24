@@ -1,10 +1,9 @@
 import logging
-import os
 
 from aiogram import Bot, F, Router
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
-from aiogram.types import FSInputFile, Message
+from aiogram.types import Message
 
 from src.messages.questions_msg import MESSAGES
 from src.utils.states import FSMTranscriptionStage
@@ -39,9 +38,9 @@ async def handle_text_file(message: Message, bot: Bot, state: FSMContext):
     filtered_lines = [line for line in content.splitlines() if line.strip().endswith('?')]
 
     max_message_length = 4096
-
     text_parts = []
     current_part = ''
+
     for line in filtered_lines:
         if len(current_part) + len(line) + 1 <= max_message_length:
             current_part += line + '\n'
