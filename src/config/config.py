@@ -8,7 +8,11 @@ class Settings(BaseSettings):
     TG_SERVER_PATH: str = '/var/lib/telegram-bot-api'
     BOT_TOKEN: str = None
     DEEPGRAM_API_KEY: str = None
-    TRANSCRIPTION_PATH: str = '/transcriptions/'
+    YA_TOKEN: str = None
+
+    @property
+    def yandex_cloud_api_url(self):
+        return 'https://cloud-api.yandex.net/v1/disk/public/resources/download?public_key={}'
 
     model_config = SettingsConfigDict(
         env_file='creds/.env',
