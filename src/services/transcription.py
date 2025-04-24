@@ -16,7 +16,7 @@ logging.basicConfig(
 
 
 class TranscriptService:
-    def __init__(self, api_key: str, file_name: str):
+    def __init__(self, api_key: str, file_name: str, yandex: bool = False):
         self.api_key = api_key
         self.audio_file_name = file_name
         self.text_file_name = f'{file_name[:-4]}.txt'
@@ -26,6 +26,7 @@ class TranscriptService:
             smart_format=True,
             language='ru',
         )
+        self.yandex = yandex
 
 
     def _transcribe_file(self):
@@ -34,11 +35,14 @@ class TranscriptService:
         )
         try:
             deepgram = DeepgramClient(api_key=self.api_key)
-            with open(f'{self.audio_file_name}', 'rb') as file:
-                buffer_data = file.read()
-            payload: FileSource = {
-                'buffer': buffer_data,
-            }
+            if not self.yandex:
+                with open(f'{self.audio_file_name}', 'rb') as file:
+                    buffer_data = file.read()
+                    payload: FileSource = {
+                        'buffer': buffer_data,
+                    }
+            else:
+                return
             response = deepgram.listen.rest.v('1').transcribe_file(
                 payload,
                 self.transcription_options,
