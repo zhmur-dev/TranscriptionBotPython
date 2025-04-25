@@ -15,12 +15,12 @@ local_router = Router()
 async def transcribe_audio(message: Message, state: FSMContext):
     await state.set_state(state=None)
     await message.answer(text=MESSAGES.get('select_file'))
-    await state.set_state(FSMTranscriptionStage.transcription_run)
+    await state.set_state(FSMTranscriptionStage.local_process_start)
 
 
 @local_router.message(
     F.video | F.audio | F.document,
-    StateFilter(FSMTranscriptionStage.transcription_run)
+    StateFilter(FSMTranscriptionStage.local_process_start)
 )
 async def handle_document(message: Message, bot: Bot, state: FSMContext):
     await state.set_state(state=None)

@@ -20,12 +20,12 @@ logging.basicConfig(
 async def extract_questions(message: Message, state: FSMContext):
     await state.set_state(state=None)
     await message.answer(text=MESSAGES.get('select_file'))
-    await state.set_state(FSMTranscriptionStage.managing_questions)
+    await state.set_state(FSMTranscriptionStage.questions_process_start)
 
 
 @questions_router.message(
     F.document,
-    StateFilter(FSMTranscriptionStage.managing_questions)
+    StateFilter(FSMTranscriptionStage.questions_process_start)
 )
 async def handle_text_file(message: Message, bot: Bot, state: FSMContext):
     file_id = message.document.file_id

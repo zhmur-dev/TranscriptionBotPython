@@ -17,11 +17,11 @@ yandex_router = Router()
 async def start_yandex_process(message: Message, state: FSMContext):
     await state.set_state(state=None)
     await message.answer(text=MESSAGES.get('paste_link'))
-    await state.set_state(FSMTranscriptionStage.get_yandex_url)
+    await state.set_state(FSMTranscriptionStage.yandex_process_start)
 
 
 @yandex_router.message(
-    StateFilter(FSMTranscriptionStage.get_yandex_url)
+    StateFilter(FSMTranscriptionStage.yandex_process_start)
 )
 async def handle_yandex_url(message: Message, bot: Bot, state: FSMContext):
     await state.set_state(state=None)
