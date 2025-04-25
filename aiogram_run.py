@@ -3,7 +3,7 @@ import logging
 
 from aiogram.types import BotCommand, BotCommandScopeDefault
 
-from src.config.create_bot import bot, dp
+from src.config.create_bot import bot, create_tg_server_workdir, dp
 from src.handlers.local import local_router
 from src.handlers.questions import questions_router
 from src.handlers.start import start_router
@@ -24,6 +24,7 @@ async def set_commands():
 
 async def main() -> None:
     await bot.delete_webhook(drop_pending_updates=True)
+    await create_tg_server_workdir()
     await set_commands()
     dp.include_routers(
         start_router,

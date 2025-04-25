@@ -1,5 +1,7 @@
 import logging
+import os
 
+from aiofiles import os as aio_os
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.client.session.aiohttp import AiohttpSession
@@ -23,3 +25,14 @@ bot = Bot(
 )
 
 dp = Dispatcher(fsm_strategy=FSMStrategy.CHAT)
+
+
+async def create_tg_server_workdir():
+    await aio_os.makedirs(
+        os.path.join(
+            str(settings.TG_SERVER_PATH),
+            settings.BOT_TOKEN,
+            settings.TG_SERVER_WORKDIR
+        ),
+        exist_ok=True,
+    )

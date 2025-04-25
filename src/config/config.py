@@ -6,6 +6,7 @@ class Settings(BaseSettings):
     TELEGRAM_API_HASH: str = None
     TELEGRAM_API_URL: str = 'http://telegram_bot_api:8081'
     TG_SERVER_PATH: str = '/var/lib/telegram-bot-api'
+    TG_SERVER_WORKDIR: str = 'transcriptions'
     BOT_TOKEN: str = None
     DEEPGRAM_API_KEY: str = None
     YA_TOKEN: str = None
