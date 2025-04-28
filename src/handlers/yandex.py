@@ -9,7 +9,7 @@ from urllib.parse import parse_qs, unquote, urlparse
 from src.config.config import settings
 from src.services.transcription import TranscriptService
 from src.messages.yandex_msg import MESSAGES
-from src.services.yandex import get_direct_url
+from src.services.yandex import check_file_size, get_direct_url
 from src.utils.states import FSMTranscriptionStage
 
 yandex_router = Router()
@@ -30,6 +30,9 @@ async def handle_yandex_url(message: Message, bot: Bot, state: FSMContext):
 
     try:
         download_url = get_direct_url(message.text)
+        if not check_file_size(message.text):
+            await message.answer(text=MESSAGES.get('file_too_big'))
+            return
 
         parsed_url = urlparse(download_url)
         query_params = parse_qs(parsed_url.query)
