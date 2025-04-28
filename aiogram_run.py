@@ -15,7 +15,7 @@ async def set_commands():
         [
             BotCommand(command='start', description='Start'),
             BotCommand(command='local', description='Transcribe from local file'),
-            # BotCommand(command='yandex', description='Transcribe from Yandex Disk'),
+            BotCommand(command='yandex', description='Transcribe from Yandex Disk'),
             BotCommand(command='questions', description='Extract questions from .txt file'),
         ],
         BotCommandScopeDefault(),

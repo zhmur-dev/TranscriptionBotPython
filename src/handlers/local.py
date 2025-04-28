@@ -50,7 +50,7 @@ async def handle_document(message: Message, bot: Bot, state: FSMContext):
         file = await bot.get_file(file_id)
         file_path = file.file_path
         service = TranscriptService(
-            api_key=settings.DEEPGRAM_API_KEY, file_name=file_path
+            api_key=settings.DEEPGRAM_API_KEY, tg_file_path=file_path
         )
         service.run_process()
         await message.answer(

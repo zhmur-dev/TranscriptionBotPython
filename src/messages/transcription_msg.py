@@ -5,5 +5,5 @@ MESSAGES = {
     'formatting_transcribed_text': 'Форматирование файла {}',
     'saving_transcribed_text': 'Запись полученного текста в файл: {}',
     'transcription_error': 'Ошибка транскрибирования: {}',
-    'transcription_started': 'Начало транскрибирования файла: {}',
+    'transcription_started': 'Начало транскрибирования файла',
 }

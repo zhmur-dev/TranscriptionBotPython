@@ -1,3 +1,5 @@
+import os
+
 from aiogram import Bot, Router
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
@@ -34,35 +36,38 @@ async def handle_yandex_url(message: Message, bot: Bot, state: FSMContext):
         filename_encoded = query_params.get('filename', [None])[0]
         filename = unquote(filename_encoded)
 
-        await message.answer(text=filename)
+        await message.answer(text=MESSAGES.get('transcription_process'))
+        service = TranscriptService(
+            api_key=settings.DEEPGRAM_API_KEY,
+            yandex_file_path=download_url,
+            yandex_file_name=filename,
+        )
+        service.run_process()
+        await message.answer(
+            text=MESSAGES.get('transcription_process_completed')
+        )
 
-        # await message.answer(text=MESSAGES.get('transcription_process'))
-        # service = TranscriptService(
-        #     api_key=settings.DEEPGRAM_API_KEY,
-        #     file_name=download_url,
-        #     yandex=True,
-        # )
-        # service.run_process()
-        # await message.answer(
-        #     text=MESSAGES.get('transcription_process_completed')
-        # )
-        #
-        # document = FSInputFile(
-        #     path=f'{file_path[:-4]}.txt',
-        #     filename=f'{original_filename[:-4]}.txt'
-        # )
-        # await bot.send_document(
-        #     chat_id=message.chat.id,
-        #     document=document,
-        # )
+        document = FSInputFile(
+            path=os.path.join(
+                str(settings.TG_SERVER_PATH),
+                settings.BOT_TOKEN,
+                settings.TG_SERVER_WORKDIR,
+                filename[:-4] + '.txt'
+            ),
+            filename=f'{filename[:-4]}.txt'
+        )
+        await bot.send_document(
+            chat_id=message.chat.id,
+            document=document,
+        )
 
     except Exception as e:
         await message.answer(
             text=MESSAGES.get('common_error').format(e)
         )
 
-    # try:
-    #     service.clean_garbage()  # noqa
-    #
-    # except Exception:  # noqa
-    #     pass
+    try:
+        service.clean_garbage()  # noqa
+
+    except Exception:  # noqa
+        pass

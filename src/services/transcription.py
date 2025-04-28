@@ -7,6 +7,7 @@ from deepgram import (  # noqa
     FileSource,
 )
 
+from src.config.config import settings
 from src.messages.transcription_msg import MESSAGES
 
 logging.basicConfig(
@@ -16,38 +17,49 @@ logging.basicConfig(
 
 
 class TranscriptService:
-    def __init__(self, api_key: str, file_name: str, yandex: bool = False):
+    def __init__(
+            self,
+            api_key: str,
+            tg_file_path: str = None,
+            yandex_file_path: str = None,
+            yandex_file_name: str = None,
+    ):
         self.api_key = api_key
-        self.audio_file_name = file_name
-        self.text_file_name = f'{file_name[:-4]}.txt'
-        self.base_url = os.getcwd()
         self.transcription_options = PrerecordedOptions(
             model='nova-2',
             smart_format=True,
             language='ru',
         )
-        self.yandex = yandex
+        self.tg_file_path = tg_file_path
+        self.yandex_file_path = yandex_file_path
+        self.yandex_file_name = yandex_file_name
+        self.text_file_name = None
 
 
     def _transcribe_file(self):
         logging.info(
-            MESSAGES.get('transcription_started').format(self.audio_file_name)
+            MESSAGES.get('transcription_started')
         )
         try:
             deepgram = DeepgramClient(api_key=self.api_key)
-            if not self.yandex:
-                with open(f'{self.audio_file_name}', 'rb') as file:
+            if not self.yandex_file_path:
+                with open(f'{self.tg_file_path}', 'rb') as file:
                     buffer_data = file.read()
                     payload: FileSource = {
                         'buffer': buffer_data,
                     }
+                    response = deepgram.listen.rest.v('1').transcribe_file(
+                        payload,
+                        self.transcription_options,
+                        timeout=99999
+                    )
             else:
-                return
-            response = deepgram.listen.rest.v('1').transcribe_file(
-                payload,
-                self.transcription_options,
-                timeout=99999
-            )
+                payload: dict = {'url': self.yandex_file_path}
+                response = deepgram.listen.rest.v('1').transcribe_url(
+                    payload,
+                    self.transcription_options,
+                    timeout=99999
+                )
             result = response.to_dict(
             )['results']['channels'][0]['alternatives'][0]['transcript']
             return result
@@ -59,6 +71,15 @@ class TranscriptService:
 
 
     def _create_text_file(self, text_data: str) -> None:
+        if not self.yandex_file_path:
+            self.text_file_name = f'{self.tg_file_path[:-4]}.txt'
+        else:
+            self.text_file_name = os.path.join(
+                str(settings.TG_SERVER_PATH),
+                settings.BOT_TOKEN,
+                settings.TG_SERVER_WORKDIR,
+                self.yandex_file_name[:-4] + '.txt'
+            )
         logging.info(
             MESSAGES.get('saving_transcribed_text').format(self.text_file_name)
         )
@@ -104,7 +125,8 @@ class TranscriptService:
 
     def clean_garbage(self) -> None:
         try:
-            os.remove(self.audio_file_name)
+            if not self.yandex_file_path:
+                os.remove(self.tg_file_path)
             os.remove(self.text_file_name)
             logging.info(
                 MESSAGES.get('file_deletion_success')
