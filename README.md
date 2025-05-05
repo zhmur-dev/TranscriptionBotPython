@@ -1,6 +1,6 @@
 ### TranscriptionBotPython
 
-A simple audio/video transcription Telegram bot using Deepgram as AI assistant.
+A simple audio/video transcription Telegram bot using Deepgram as AI assistant. It can transcribe either local files received via bot interface, or remote files from Yandex Disk via public URL.
 
 #### Installation and startup
 
