@@ -52,7 +52,7 @@ async def handle_document(message: Message, bot: Bot, state: FSMContext):
         service = TranscriptService(
             api_key=settings.DEEPGRAM_API_KEY, tg_file_path=file_path
         )
-        service.run_process()
+        await service.run_process()
         await message.answer(
             text=MESSAGES.get('transcription_process_completed')
         )

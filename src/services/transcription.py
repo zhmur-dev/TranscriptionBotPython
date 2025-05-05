@@ -36,7 +36,7 @@ class TranscriptService:
         self.text_file_name = None
 
 
-    def _transcribe_file(self):
+    async def _transcribe_file(self):
         logging.info(
             MESSAGES.get('transcription_started')
         )
@@ -48,14 +48,14 @@ class TranscriptService:
                     payload: FileSource = {
                         'buffer': buffer_data,
                     }
-                    response = deepgram.listen.rest.v('1').transcribe_file(
+                    response = await deepgram.listen.asyncrest.v('1').transcribe_file(
                         payload,
                         self.transcription_options,
                         timeout=99999
                     )
             else:
                 payload: dict = {'url': self.yandex_file_path}
-                response = deepgram.listen.rest.v('1').transcribe_url(
+                response = await deepgram.listen.asyncrest.v('1').transcribe_url(
                     payload,
                     self.transcription_options,
                     timeout=99999
@@ -113,10 +113,10 @@ class TranscriptService:
             )
 
 
-    def run_process(self) -> None:
+    async def run_process(self) -> None:
         try:
-            text = self._transcribe_file()
-            self._create_text_file(text)
+            text = await self._transcribe_file()
+            self._create_text_file(text_data=text)
         except Exception as e:
             logging.error(
                 MESSAGES.get('file_processing_error').format(e)

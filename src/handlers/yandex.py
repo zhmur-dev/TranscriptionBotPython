@@ -45,7 +45,7 @@ async def handle_yandex_url(message: Message, bot: Bot, state: FSMContext):
             yandex_file_path=download_url,
             yandex_file_name=filename,
         )
-        service.run_process()
+        await service.run_process()
         await message.answer(
             text=MESSAGES.get('transcription_process_completed')
         )
